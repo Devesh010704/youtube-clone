@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { use } from "react";
 
 const userSchema = new mongoose.Schema(
   {
@@ -13,7 +12,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
-    username: {
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -43,7 +42,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Password is required"],
     },
-    refershToken: {
+    refreshToken: {
       type: String,
     },
   },
@@ -52,14 +51,14 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  this.password = bcrypt.hash(this.password, 10);
+  this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
-userSchema.methods.genrateAccessToken = function () {
+userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       _id: this._id,
@@ -73,14 +72,14 @@ userSchema.methods.genrateAccessToken = function () {
     },
   );
 };
-userSchema.methods.genrateRefreshToken = function () {
+userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {
       _id: this._id,
     },
-    process.env.REFERSH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET,
     {
-      expiresIn: process.env.REFERSH_TOKEN_EXPIRY,
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRY,
     },
   );
 };

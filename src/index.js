@@ -4,14 +4,14 @@ import { app } from "./app.js";
 import dbConnect from "./db/index.js";
 
 dbConnect()
-.then(()=>{
-    app.listen(process.env.PORT||8000,()=>{
-        console.log(`the server is running on port ${process.env.PORT}`)
-    })
-})
-.catch((err)=>{
-    console.log("db connection failed!!!",err)
-});
+  .then(() => {
+    app.listen(process.env.PORT || 8000, () => {
+      console.log(`the server is running on port ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.log("db connection failed!!!", err);
+  });
 
 // import mongoose from "mongoose";
 // import { DB_NAME } from "./constants";
